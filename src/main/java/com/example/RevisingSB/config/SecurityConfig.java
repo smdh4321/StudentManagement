@@ -5,6 +5,7 @@ import com.example.RevisingSB.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,6 +34,20 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/students/**")
+                                .hasAnyRole("ADMIN","USER")
+
+                                .requestMatchers(HttpMethod.POST,"/api/students/**")
+                                .hasAnyRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.PUT, "/api/students/**")
+                                .hasRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.PATCH, "/api/students/**")
+                                .hasRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.DELETE, "/api/students/**")
+                                .hasRole("ADMIN")
                                 .anyRequest().authenticated());
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
